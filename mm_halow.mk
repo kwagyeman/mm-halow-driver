@@ -12,6 +12,19 @@ MM_HALOW_MORSELIB_DIR = $(MM_HALOW_MMIOT_DIR)/morselib
 # debugging, but those sources are GPL-3.0, which is not compatible with the
 # rest of this firmware, so the prebuilt library is the default.
 MM_HALOW_MORSELIB_CORE ?= arm-cortex-m33f
+
+# The MM-IoT-SDK (prebuilt morselib + the transceiver firmware blobs) is a
+# submodule of this driver, i.e. a submodule of a submodule of the embedding
+# project.  A recursive checkout populates it, but the embedder's flat "fetch
+# my submodules" step is usually not recursive (MicroPython's `make submodules`
+# is not), which leaves the SDK empty -- and both its source files (compiled
+# below) and its firmware blobs then fail with "No such file".  Fetch it here
+# at parse time, before anything reads from it, guarded so it is a no-op once
+# the SDK is present.
+ifeq ($(wildcard $(MM_HALOW_MORSELIB_DIR)/lib/$(MM_HALOW_MORSELIB_CORE)/libmorse.a),)
+$(info Fetching the mm-iot-sdk nested submodule...)
+$(shell cd $(MM_HALOW_TOP) && git submodule update --init lib/mm-iot-sdk >&2)
+endif
 ifeq ($(MM_HALOW_MORSELIB_SOURCE),1)
 INC += $(addprefix -I$(MM_HALOW_MORSELIB_DIR)/,src src/internal src/emmet src/umac/rc/mmrc_osal mmrc/src/core)
 SRC_THIRDPARTY_C += $(patsubst $(TOP)/%,%,\
