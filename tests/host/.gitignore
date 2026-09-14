@@ -1,1 +1,2 @@
 test_alloc
+test_alloc_asan
