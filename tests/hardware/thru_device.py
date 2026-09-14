@@ -10,8 +10,8 @@ HOST = "192.168.0.137"
 TCP_PORT = 9001
 UDP_PORT = 9002
 UDP_DOWN_PORT = 9003
-DUR = 5           # seconds per direction
-TOTAL_S = 1200    # 20 minutes
+DUR = 5  # seconds per direction
+TOTAL_S = 1200  # 20 minutes
 
 buf = bytearray(1460)
 mv = memoryview(buf)
@@ -57,7 +57,7 @@ def udp_run(direction):
             while time.ticks_diff(time.ticks_ms(), t) < DUR * 1000:
                 n += s.sendto(udp_mv, a)
             s.sendto(b"END", a)
-            time.sleep_ms(400)      # let the sink drain before the next phase
+            time.sleep_ms(400)  # let the sink drain before the next phase
         else:
             s.sendto(b"DOWN", a)
             while time.ticks_diff(time.ticks_ms(), t) < DUR * 1000:
@@ -102,7 +102,7 @@ while time.ticks_diff(time.ticks_ms(), start) < TOTAL_S * 1000:
             k = "%s_%s" % (kind, d)
             r = kbit(n, ms)
             row.append("%s=%d" % (k, r))
-            a = acc.setdefault(k, [0, 0, 0, 10 ** 9])   # sum, count, max, min
+            a = acc.setdefault(k, [0, 0, 0, 10**9])  # sum, count, max, min
             a[0] += r
             a[1] += 1
             if r > a[2]:

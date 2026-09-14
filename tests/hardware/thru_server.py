@@ -3,12 +3,13 @@
 TCP: client connects and sends "UP\n" (it streams, we sink) or "DOWN\n" (we stream).
 UDP: client sends b"UP" datagrams (we sink) or one b"DOWN" (we stream back to its address).
 """
+
 import socket
 import threading
 import time
 
 BUF = bytes(1460)
-DUR_CAP = 30          # never stream longer than this per request
+DUR_CAP = 30  # never stream longer than this per request
 
 
 def tcp_client(c):
